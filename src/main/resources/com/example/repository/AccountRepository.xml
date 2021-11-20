@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 4.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.repository.AccountRepository">
+
+    <select id="list" resultType="com.example.entity.Account">
+        SELECT
+              account_number AS accountNumber
+            , email_address AS emailAddress
+            , nick_name AS nickName
+            , delete_flag AS deleteFlag
+            , created_at AS createdAt
+            , created_by AS createdBy
+            , updated_at AS updatedAt
+            , updated_by AS updatedBy
+        FROM account
+        ORDER BY account_number
+    </select>
+
+    <select id="exists" resultType="boolean">
+        SELECT EXISTS(
+            SELECT *
+            FROM account
+            WHERE email_address = #{emailAddress}
+        )
+    </select>
+
+    <select id="get" resultType="com.example.entity.Account">
+        SELECT
+              account_number AS accountNumber
+            , email_address AS emailAddress
+            , nick_name AS nickName
+            , delete_flag AS deleteFlag
+            , created_at AS createdAt
+            , created_by AS createdBy
+            , updated_at AS updatedAt
+            , updated_by AS updatedBy
+        FROM account
+        WHERE
+            email_address = #{emailAddress}
+    </select>
+
+    <insert id="insert" parameterType="com.example.entity.Account">
+        INSERT INTO account (
+             email_address
+            ,nick_name
+            ,delete_flag
+            ,created_by
+            ,updated_by
+        ) VALUES (
+             #{emailAddress}
+            ,#{nickName}
+            ,#{deleteFlag}
+            ,#{createdBy}
+            ,#{updatedBy}
+        )
+        <selectKey resultType="java.lang.Long" keyProperty="accountNumber">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <!-- TODO:updated_atなどで楽観ロック検討推奨 -->
+    <update id="update" parameterType="com.example.entity.Account">
+        UPDATE account
+        SET
+             nick_name     = #{nickName}
+            ,updated_by    = #{updatedBy}
+        WHERE
+            account_number = #{accountNumber}
+            AND
+            email_address  = #{emailAddress}
+    </update>
+
+</mapper>
