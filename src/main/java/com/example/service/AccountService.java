@@ -82,16 +82,18 @@ public class AccountService extends ServiceBase {
     public AccountResponse update(AccountUpdateRequest accountUpdateRequest)
     throws AppException {
         try {
-            if (!accountRepository.exists(accountUpdateRequest.getEmailAddress())) {
+
+            Account account = accountRepository.get(accountUpdateRequest.getEmailAddress());
+
+            if (ObjectUtils.isEmpty(account)) {
                 throw createAppException("target nothing.", HttpStatus.BAD_REQUEST);
             }
+            if(account.getAccountNumber() != accountUpdateRequest.getAccountNumber()){
+                throw createAppException("accountNumber error.", HttpStatus.BAD_REQUEST);
+            }
 
-            Account account = Account.builder()
-                                     .accountNumber(accountUpdateRequest.getAccountNumber())
-                                     .emailAddress(accountUpdateRequest.getEmailAddress())
-                                     .nickName(accountUpdateRequest.getNickName())
-                                     .updatedBy(AccountService.class.getName())
-                                     .build();
+            account.setNickName(accountUpdateRequest.getNickName());
+            account.setUpdatedBy(AccountService.class.getName());
 
             if (accountRepository.update(account) != 1) {
                 throw createAppException("update error.", HttpStatus.INTERNAL_SERVER_ERROR);
