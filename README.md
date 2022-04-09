@@ -7,9 +7,6 @@ mkdir -pv ./docker-mysql/data
 
 docker-compose up -d
 
-% docker ps |grep mysql
-xxxxxxxxxxxx   spring-boot_mysql   "docker-entrypoint.s…"   13 seconds ago   Up 12 seconds   33060/tcp, 0.0.0.0:23306->3306/tcp   docker-mysql
-
 docker exec -it docker-mysql bash
 
 cd /tmp/tools
@@ -35,6 +32,15 @@ mysql> desc account;
 
 exit
 exit
+```
+
+# build for Dockerfile
+```
+docker build ./ -t spring-boot-api
+
+docker run --name spring-boot-api -p 20080:8080 -t spring-boot-api
+
+http://localhost:20080/api
 ```
 
 # application start
