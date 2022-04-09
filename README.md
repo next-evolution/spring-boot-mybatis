@@ -13,7 +13,7 @@ xxxxxxxxxxxx   spring-boot_mysql   "docker-entrypoint.s…"   13 seconds ago   U
 docker exec -it docker-mysql bash
 
 cd /tmp/tools
-mysql -uroot -ppassword < 00_create_database.sql
+sh 00_ddl_database.sh
 sh 10_ddl_schema1.sh
 
 mysql -uapp_user -papp_user_password schema1
